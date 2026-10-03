@@ -1,0 +1,72 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from pathlib import Path
+
+
+EX02 = Path(__file__).resolve().parent
+SUBJECT = EX02.parent / "subject"
+train = pd.read_csv(SUBJECT / "Train_knight.csv")
+test = pd.read_csv(SUBJECT / "Test_knight.csv")
+
+jedi = train[train["knight"] == "Jedi"]
+sith = train[train["knight"] == "Sith"]
+
+
+fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+
+
+axes[0, 0].scatter(
+    jedi["Empowered"], jedi["Stims"],
+    label="Jedi", alpha=0.6
+)
+axes[0, 0].scatter(
+    sith["Empowered"], sith["Stims"],
+    label="Sith", alpha=0.6
+)
+axes[0, 0].set_xlabel("Empowered")
+axes[0, 0].set_ylabel("Stims")
+axes[0, 0].set_title("Train - separated")
+axes[0, 0].legend()
+
+
+# TRAIN - mezclado
+axes[0, 1].scatter(
+    jedi["Midi-chlorien"], jedi["Deflection"],
+    label="Jedi", alpha=0.6
+)
+axes[0, 1].scatter(
+    sith["Midi-chlorien"], sith["Deflection"],
+    label="Sith", alpha=0.6
+)
+axes[0, 1].set_xlabel("Midi-chlorien")
+axes[0, 1].set_ylabel("Deflection")
+axes[0, 1].set_title("Train - mixed")
+axes[0, 1].legend()
+
+
+# TEST - separado
+axes[1, 0].scatter(
+    test["Empowered"],
+    test["Stims"],
+    alpha=0.6
+)
+axes[1, 0].set_xlabel("Empowered")
+axes[1, 0].set_ylabel("Stims")
+axes[1, 0].set_title("Test - separated")
+
+
+# TEST - mezclado
+axes[1, 1].scatter(
+    test["Midi-chlorien"],
+    test["Deflection"],
+    alpha=0.6
+)
+axes[1, 1].set_xlabel("Midi-chlorien")
+axes[1, 1].set_ylabel("Deflection")
+axes[1, 1].set_title("Test - mixed")
+
+
+plt.tight_layout()
+plt.savefig(EX02 / "points.png")
+plt.show()
+plt.close()
