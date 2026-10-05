@@ -3,64 +3,90 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 
-EX03 = Path(__file__).resolve().parent
-SUBJECT = EX03.parent / "subject"
+EX02 = Path(__file__).resolve().parent
+SUBJECT = EX02.parent / "subject"
 
 train = pd.read_csv(SUBJECT / "Train_knight.csv")
 test = pd.read_csv(SUBJECT / "Test_knight.csv")
 
 
-# STANDARDIZATION
-knight = train["knight"]
-train_features = train.drop(columns=["knight"])
-
-
-# Estandarizamos Train
-train_standardized = ( train_features - train_features.mean()) / train_features.std()
-# Estandarizamos Test
-test_standardized = ( test - test.mean()) / test.std()
-
-
-train_standardized["knight"] = knight
-
-print("TRAIN STANDARDIZED:")
-print(train_standardized)
-
-print("\nTEST STANDARDIZED:")
-print(test_standardized)
-
-
-# GRAPH
-
 # Separamos Jedi y Sith
-jedi = train_standardized[
-    train_standardized["knight"] == "Jedi"
-]
-sith = train_standardized[
-    train_standardized["knight"] == "Sith"
-]
+jedi = train[train["knight"] == "Jedi"]
+sith = train[train["knight"] == "Sith"]
 
 
-plt.scatter(
+# Creamos una figura con 4 gráficos
+fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+
+
+# TRAIN - gráfico que separa mejor
+axes[0, 0].scatter(
     jedi["Empowered"],
     jedi["Stims"],
     label="Jedi",
     alpha=0.6
 )
-plt.scatter(
+
+axes[0, 0].scatter(
     sith["Empowered"],
     sith["Stims"],
     label="Sith",
     alpha=0.6
 )
 
-plt.xlabel("Empowered")
-plt.ylabel("Stims")
-plt.title("Standardized data")
-plt.legend()
+axes[0, 0].set_xlabel("Empowered")
+axes[0, 0].set_ylabel("Stims")
+axes[0, 0].set_title("Train - separated")
+axes[0, 0].legend()
+
+
+# TRAIN - gráfico donde se mezclan más
+axes[0, 1].scatter(
+    jedi["Midi-chlorien"],
+    jedi["Deflection"],
+    label="Jedi",
+    alpha=0.6
+)
+
+axes[0, 1].scatter(
+    sith["Midi-chlorien"],
+    sith["Deflection"],
+    label="Sith",
+    alpha=0.6
+)
+
+axes[0, 1].set_xlabel("Midi-chlorien")
+axes[0, 1].set_ylabel("Deflection")
+axes[0, 1].set_title("Train - mixed")
+axes[0, 1].legend()
+
+
+# TEST - mismas features del gráfico separado
+axes[1, 0].scatter(
+    test["Empowered"],
+    test["Stims"],
+    alpha=0.6
+)
+
+axes[1, 0].set_xlabel("Empowered")
+axes[1, 0].set_ylabel("Stims")
+axes[1, 0].set_title("Test - separated")
+
+
+# TEST - mismas features del gráfico mezclado
+axes[1, 1].scatter(
+    test["Midi-chlorien"],
+    test["Deflection"],
+    alpha=0.6
+)
+
+axes[1, 1].set_xlabel("Midi-chlorien")
+axes[1, 1].set_ylabel("Deflection")
+axes[1, 1].set_title("Test - mixed")
+
 
 plt.tight_layout()
 
-plt.savefig(EX03 / "standardized.png")
+plt.savefig(EX02 / "points.png")
 plt.show()
 plt.close()
